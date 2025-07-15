@@ -97,6 +97,19 @@ Image Settings:
     - ``1080x1920`` (Portrait FHD, 9:16)
     - ``2560x1920`` (QSXGA, 4:3)
 
+- **pixel_format** (*Optional*, enum): The pixel format to use for the images.
+  Defaults to ``jpeg`` (JPEG compressed image) which may not be supported by all cameras.
+  Other formats require more CPU and memory and may not be supported by all cameras.
+
+    - ``jpeg``: JPEG compressed image
+    - ``rgb565``: RGB565 uncompressed image
+    - ``yuv422``: YUV422 uncompressed image
+    - ``yuv420``: YUV420 uncompressed image
+    - ``grayscale``: Grayscale uncompressed image
+    - ``rgb888``: RGB888 uncompressed image
+    - ``raw``: Raw uncompressed image
+    - ``rgb444``: RGB444 uncompressed image
+    - ``rgb555``: RGB555 uncompressed image
 
 - **jpeg_quality** (*Optional*, int): The JPEG quality that the camera should encode images with.
   From 10 (best) to 63 (worst). Defaults to ``10``.
@@ -283,6 +296,50 @@ Configuration examples
       href_pin: GPIO26
       pixel_clock_pin: GPIO21
       reset_pin: GPIO15
+
+**M5Stack AtomS3R-CAM**:
+
+.. code-block:: yaml
+
+    # Example configuration entry
+    esp32:
+      framework:
+        sdkconfig_options:
+          CONFIG_SPIRAM_SUPPORT: y
+          CONFIG_SPIRAM_USE_CAPS_ALLOC: y
+          CONFIG_SPIRAM_USE_MALLOC: y
+
+    switch: # required to initialize the camera
+      - platform: gpio
+        name: Activate My Camera
+        pin:
+          number: GPIO18
+          inverted: true
+        restore_mode: ALWAYS_ON
+
+    esp32_camera:
+      setup_priority: -200 # delay after GPIO18 was set to low
+      i2c_pins:
+        sda: GPIO12 # CAM_SDA
+        scl: GPIO9 # CAM_SCL
+      vsync_pin: GPIO10 # VSYNC
+      href_pin: GPIO14 # HREF
+      external_clock: # XCLK
+        pin: GPIO21
+        frequency: 20MHz
+      pixel_clock_pin: GPIO40 # PCLK
+      data_pins: [GPIO3, GPIO42, GPIO46, GPIO48, GPIO4, GPIO17, GPIO11, GPIO13] # Y2-9
+
+      # Image settings
+      name: My Camera
+      max_framerate: 15.0 fps
+      resolution: 320x240
+      pixel_format: RGB565
+      aec_mode: manual
+      aec_value: 1200
+      agc_mode: manual
+      agc_value: 1
+      # ...
 
 **Wrover Kit Boards**:
 
