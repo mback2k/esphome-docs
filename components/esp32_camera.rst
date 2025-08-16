@@ -302,13 +302,6 @@ Configuration examples
 .. code-block:: yaml
 
     # Example configuration entry
-    esp32:
-      framework:
-        sdkconfig_options:
-          CONFIG_SPIRAM_SUPPORT: y
-          CONFIG_SPIRAM_USE_CAPS_ALLOC: y
-          CONFIG_SPIRAM_USE_MALLOC: y
-
     switch: # required to initialize the camera
       - platform: gpio
         name: Activate My Camera
@@ -317,11 +310,13 @@ Configuration examples
           inverted: true
         restore_mode: ALWAYS_ON
 
-    esp32_camera:
-      setup_priority: -200 # delay after GPIO18 was set to low
-      i2c_pins:
+    i2c:
+      - id: camera_i2c
         sda: GPIO12 # CAM_SDA
         scl: GPIO9 # CAM_SCL
+    esp32_camera:
+      setup_priority: -200 # delay after GPIO18 was set to low
+      i2c_id: camera_i2c
       vsync_pin: GPIO10 # VSYNC
       href_pin: GPIO14 # HREF
       external_clock: # XCLK
@@ -334,11 +329,10 @@ Configuration examples
       name: My Camera
       max_framerate: 15.0 fps
       resolution: 320x240
+      frame_buffer_count: 1
       pixel_format: RGB565
-      aec_mode: manual
-      aec_value: 1200
+      jpeg_quality: 6
       agc_mode: manual
-      agc_value: 1
       # ...
 
 **Wrover Kit Boards**:
